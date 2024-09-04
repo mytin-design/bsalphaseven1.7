@@ -1,0 +1,278 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
+
+
+@import url(https://fonts.googleapis.com/css?family=Titillium+Web:300);
+
+
+
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background:linear-gradient(rgba(229, 241, 241, 0.87), rgba(248, 255, 255, 0.89));
+
+}
+
+
+#sideviewnav {
+    height: 100%;
+    width: 15pc;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    padding-top: 60px;
+    background-color: rgba(243, 241, 241, 0.979);
+    overflow: hidden;
+    transition: .5s ease;
+    background:linear-gradient(rgba(229, 241, 241, 0.932), rgba(234, 250, 250, 0.925));
+    
+
+}
+
+
+.menu-bar {
+    width: 35px;
+    height: 5px;
+    background-color: black;
+    margin: 6px 0;
+}
+
+.droplist {
+    padding: .5pc;
+}
+
+.accordionText > li {
+    list-style-type: none;
+    padding: .5pc;
+    margin-left: .5pc .5pc;
+    border-radius: .4pc;
+}
+
+.accordionText > li:hover {
+    transition: .5s ease;
+    background-color: rgba(250, 255, 255, 0.747);
+}
+.accordionText > li > a {
+    font-size: small;
+    text-decoration: none;
+
+}
+.closeviewNav {
+    position: absolute;
+    top: 15;
+    margin-left: 180px;
+    padding: .2pc .7pc;
+    font-size: 1.9pc;
+    border: none;
+    background-color: #f7f7f7e5;
+
+}
+
+
+.btnandtitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5pc;
+    width: 19pc;
+}
+
+.openviewNav {
+    border: none;
+    background: none;
+}
+
+.closeviewNav:hover {
+    background-color: #f7f7f7a2;
+    color: red;
+}
+
+
+/* accordion */
+
+/* styles for accordion */
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.mainHolder {
+    margin: 5pc auto;
+    width: 80%;
+    border: .1pc solid #eee;
+    border-radius: .8pc;
+}
+.accordionbtn {
+    
+    padding: .5pc;
+    width: 100%;
+    height: 2pc;
+    border: none;
+    text-align: start;
+    transition: .5s ease;
+    background: none;
+    border-radius: .4pc;
+}
+
+
+
+
+.innerbtnlister {
+    text-align: center;
+}
+
+
+.accordionbtn:hover, .active {
+    background-color: #fdfafae8;
+}
+
+
+/* use this when not using the maxHeight property 
+.accordionText {
+    padding: .5pc  .5pc 1pc;
+    border: .1pc solid #eee;
+    display: none;
+    overflow: hidden;
+
+}
+
+*/
+
+/* use this when using the maxHeight property */
+
+.accordionText {
+    padding: 0 1pc;
+    border: .1pc solid #eee;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .5s ease-out;
+
+}
+
+/*
+.active1, .active2, .active3 {
+    display: block !important;
+}
+*/
+
+
+/* add icons to the buttons */
+
+
+.accordionbtn::after {
+    content: '\02795'; /* Unicode character for "plus sign (+) */
+    font-size: 13px;
+    color: #777;
+    float: right;
+    margin-left: 5px;
+}
+
+.active::after {
+    content: '\2796'; /* Unicode character for "minus" sign (-) */
+}
+
+
+/* Main styles */
+
+.main {
+    padding: .5pc;
+}
+.sectionView {
+    margin-left: 15pc;
+
+}
+
+
+
+/*table styles */
+
+
+.stu-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stu-table th, .stu-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.stu-table th {
+    background-color: #f2f2f2;
+}
+
+.stu-table td label {
+        display: none;
+    }
+
+.marksboxer {
+    border-radius: .4pc;
+    padding: .5pc;
+    background-color: rgb(250, 255, 255);
+}
+
+@media (max-width: 600px) {
+
+    #sideviewnav {
+        width: 0;
+    }
+
+    .sectionView {
+        margin-left: 0;
+    
+    }
+    .stu-table, .stu-table thead, .stu-table tbody, .stu-table th, .stu-table td, .stu-table tr {
+        display: block;
+    }
+    
+    .stu-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    
+    .stu-table th, .stu-table td {
+        text-align: left;
+        display: block;
+        padding: 10px;
+        border: none;
+    }
+
+    .stu-table th {
+        background-color: transparent;
+        font-weight: bold;
+    }
+    
+    .stu-table td {
+        position: relative;
+        padding-left: 50%;
+    }
+
+    .stu-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        white-space: nowrap;
+        font-weight: bold;
+        font-size: auto;
+    }
+    
+    .stu-table td label {
+        display: none;
+    }
+
+    .stu-table thead tr {
+        display: none;
+    }
+}

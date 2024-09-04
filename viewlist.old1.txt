@@ -1,0 +1,712 @@
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['stdgrade']) && isset($_POST['stream'])) {
+    $stdgrade = filter_input(INPUT_POST, 'stdgrade', FILTER_SANITIZE_STRING);
+    $stream = filter_input(INPUT_POST, 'stream', FILTER_SANITIZE_STRING);
+
+    require("./connect.php");
+
+    // Establish database connection
+    if ($connect->connect_error) {
+        die("Connection failed: " . $connect->connect_error);
+    }
+
+    if ($stdgrade == "Grade Seven" || $stdgrade == "Grade Eight" || $stdgrade == "Grade Nine") {
+            // Prepare SQL statement with parameters for 'stdgrade' and 'stream'
+        $sql = "SELECT * FROM juniorgrades WHERE stdgrade = ? AND stream = ?";
+        $stmt = $connect->prepare($sql);
+    }elseif ($stdgrade == "Grade Four" || $stdgrade == "Grade Five" || $stdgrade == "Grade Six") {
+                    // Prepare SQL statement with parameters for 'stdgrade' and 'stream'
+        $sql = "SELECT * FROM uppergrades WHERE stdgrade = ? AND stream = ?";
+        $stmt = $connect->prepare($sql);
+    }elseif ($stdgrade == "Grade One" || $stdgrade == "Grade Two" || $stdgrade == "Grade Three") {
+            // Prepare SQL statement with parameters for 'stdgrade' and 'stream'
+        $sql = "SELECT * FROM lowergrades WHERE stdgrade = ? AND stream = ?";
+        $stmt = $connect->prepare($sql);
+    }else {
+        echo "No grade selected.";
+    }
+
+    if (!$stmt) {
+        die("Error in SQL query: " . $connect->error);
+    }
+
+    // Bind parameters and execute the prepared statement
+    $stmt->bind_param("ss", $stdgrade, $stream);
+    $stmt->execute();
+
+    // Get result set
+    $result = $stmt->get_result();
+
+    // Check for data and display in HTML table
+    if ($result->num_rows > 0) {
+
+?>
+
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</title>
+    <style>
+        /* Your CSS styles here */
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 70%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: scroll;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .backbtnbox {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .bckbtnbx {
+            height: 30px;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: #eee;
+            border-radius: 4px;
+            color: #333;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .bckbtnbx:hover {
+            background-color: #ddd;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Math</th>
+                    <th>English</th>
+                    <th>Kiswahili</th>
+                    <th>Social Studies</th>
+                    <th>Int. Science</th>
+                    <th>Pre-Tech</th>
+                    <th>C/A</th>
+                    <th>Agriculture</th>
+                    <th>Total</th>
+                    <!-- Add more table headers here if necessary -->
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $counter = 1; 
+                while ($row = $result->fetch_assoc()) { ?>
+                    <tr>
+                        <td><?php echo $counter++; ?></td>
+                        <td><?php echo $row['username']; ?></td>
+                        <td><?php echo $row['name']; ?></td>
+                        <td><?php echo $row['subjmath']; ?></td>
+                        <td><?php echo $row['subjeng']; ?></td>
+                        <td><?php echo $row['subjkisw']; ?></td>
+                        <td><?php echo $row['subjsocial']; ?></td>
+                        <td><?php echo $row['subjintscie']; ?></td>
+                        <td><?php echo $row['subjpretech']; ?></td>
+                        <td><?php echo $row['subjca']; ?></td>
+                        <td><?php echo $row['subjagrinu']; ?></td>
+                        <td><?php echo $row['total']; ?></td>
+                        <!-- Add more table data here if necessary -->
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+        <div class="backbtnbox">
+            <a href="./viewmarks.php" class="bckbtnbx">Back</a>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<?php
+    } else {
+        echo "<script>
+                    alert('There are currently no registered students in this class / stream.'); 
+                    window.location.href = './entermarks.php';
+                </script>";
+    }
+
+    // Close prepared statement and database connection
+    $stmt->close();
+    $connect->close();
+
+} else {
+    echo "Invalid request.";
+}
+?>
+
+
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['stdgrade']) && isset($_POST['stream'])) {
+    $stdgrade = filter_input(INPUT_POST, 'stdgrade', FILTER_SANITIZE_STRING);
+    $stream = filter_input(INPUT_POST, 'stream', FILTER_SANITIZE_STRING);
+
+    require("./connect.php");
+
+    // Establish database connection
+    if ($connect->connect_error) {
+        die("Connection failed: " . $connect->connect_error);
+    }
+
+    if ($stdgrade == "Grade Seven" || $stdgrade == "Grade Eight" || $stdgrade == "Grade Nine") {
+            // Prepare SQL statement with parameters for 'stdgrade' and 'stream'
+        $sql = "SELECT * FROM juniorgrades WHERE stdgrade = ? AND stream = ?";
+        $stmt = $connect->prepare($sql);
+
+
+        // =============JUNIOR SEC ==============
+        if (!$stmt) {
+            die("Error in SQL query: " . $connect->error);
+        }
+    
+        // Bind parameters and execute the prepared statement
+        $stmt->bind_param("ss", $stdgrade, $stream);
+        $stmt->execute();
+    
+        // Get result set
+        $result = $stmt->get_result();
+    
+        // Check for data and display in HTML table
+        if ($result->num_rows > 0) {
+    
+    ?>
+    
+            <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</title>
+        <style>
+            /* Your CSS styles here */
+            
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            .container {
+                max-width: 70%;
+                margin: 20px auto;
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                overflow: scroll;
+            }
+    
+            h2 {
+                color: #333;
+            }
+    
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+    
+            th, td {
+                padding: 8px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+    
+            th {
+                background-color: #f2f2f2;
+            }
+    
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+    
+            .backbtnbox {
+                margin-top: 20px;
+                display: flex;
+                justify-content: flex-end;
+            }
+    
+            .bckbtnbx {
+                height: 30px;
+                width: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                background-color: #eee;
+                border-radius: 4px;
+                color: #333;
+                border: 1px solid #ccc;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+    
+            .bckbtnbx:hover {
+                background-color: #ddd;
+            }
+        
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Math</th>
+                        <th>English</th>
+                        <th>Kiswahili</th>
+                        <th>Social Studies</th>
+                        <th>Int. Science</th>
+                        <th>Pre-Tech</th>
+                        <th>C/A</th>
+                        <th>Agriculture</th>
+                        <th>Total</th>
+                        <!-- Add more table headers here if necessary -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $counter = 1; 
+                    while ($row = $result->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $counter++; ?></td>
+                            <td><?php echo $row['username']; ?></td>
+                            <td><?php echo $row['name']; ?></td>
+                            <td><?php echo $row['subjmath']; ?></td>
+                            <td><?php echo $row['subjeng']; ?></td>
+                            <td><?php echo $row['subjkisw']; ?></td>
+                            <td><?php echo $row['subjsocial']; ?></td>
+                            <td><?php echo $row['subjintscie']; ?></td>
+                            <td><?php echo $row['subjpretech']; ?></td>
+                            <td><?php echo $row['subjca']; ?></td>
+                            <td><?php echo $row['subjagrinu']; ?></td>
+                            <td><?php echo $row['total']; ?></td>
+                            <!-- Add more table data here if necessary -->
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <div class="backbtnbox">
+                <a href="./viewmarks.php" class="bckbtnbx">Back</a>
+            </div>
+        </div>
+    </body>
+    </html>
+
+<?php
+} else {
+    echo "<script>
+                alert('There are currently no registered students in this class / stream.'); 
+                window.location.href = './entermarks.php';
+            </script>";
+}
+?>
+    
+
+<?php
+        //=================
+    }elseif ($stdgrade == "Grade Four" || $stdgrade == "Grade Five" || $stdgrade == "Grade Six") {
+                    // Prepare SQL statement with parameters for 'stdgrade' and 'stream'
+        $sql = "SELECT * FROM uppergrades WHERE stdgrade = ? AND stream = ?";
+        $stmt = $connect->prepare($sql);
+
+        // ====================== UPPER ================
+        if (!$stmt) {
+            die("Error in SQL query: " . $connect->error);
+        }
+    
+        // Bind parameters and execute the prepared statement
+        $stmt->bind_param("ss", $stdgrade, $stream);
+        $stmt->execute();
+    
+        // Get result set
+        $result = $stmt->get_result();
+    
+        // Check for data and display in HTML table
+        if ($result->num_rows > 0) {
+    
+    ?>
+    
+            <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</title>
+        <style>
+            /* Your CSS styles here */
+            
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            .container {
+                max-width: 70%;
+                margin: 20px auto;
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                overflow: scroll;
+            }
+    
+            h2 {
+                color: #333;
+            }
+    
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+    
+            th, td {
+                padding: 8px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+    
+            th {
+                background-color: #f2f2f2;
+            }
+    
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+    
+            .backbtnbox {
+                margin-top: 20px;
+                display: flex;
+                justify-content: flex-end;
+            }
+    
+            .bckbtnbx {
+                height: 30px;
+                width: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                background-color: #eee;
+                border-radius: 4px;
+                color: #333;
+                border: 1px solid #ccc;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+    
+            .bckbtnbx:hover {
+                background-color: #ddd;
+            }
+        
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Math</th>
+                        <th>English</th>
+                        <th>Kiswahili</th>
+                        <th>Social Studies</th>
+                        <th>Int. Science</th>
+                        <th>Pre-Tech</th>
+                        <th>C/A</th>
+                        <th>Agriculture</th>
+                        <th>Total</th>
+                        <!-- Add more table headers here if necessary -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $counter = 1; 
+                    while ($row = $result->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $counter++; ?></td>
+                            <td><?php echo $row['username']; ?></td>
+                            <td><?php echo $row['name']; ?></td>
+                            <td><?php echo $row['subjmath']; ?></td>
+                            <td><?php echo $row['subjeng']; ?></td>
+                            <td><?php echo $row['subjkisw']; ?></td>
+                            <td><?php echo $row['subjsocial']; ?></td>
+                            <td><?php echo $row['subjintscie']; ?></td>
+                            <td><?php echo $row['subjpretech']; ?></td>
+                            <td><?php echo $row['subjca']; ?></td>
+                            <td><?php echo $row['subjagrinu']; ?></td>
+                            <td><?php echo $row['total']; ?></td>
+                            <!-- Add more table data here if necessary -->
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <div class="backbtnbox">
+                <a href="./viewmarks.php" class="bckbtnbx">Back</a>
+            </div>
+        </div>
+    </body>
+    </html>
+
+    <?php
+} else {
+    echo "<script>
+                alert('There are currently no registered students in this class / stream.'); 
+                window.location.href = './entermarks.php';
+            </script>";
+}
+?>
+    
+
+        // ================== UPPER =================
+<?php
+    }elseif ($stdgrade == "Grade+One" || $stdgrade == "Grade+Two" || $stdgrade == "Grade+Three") {
+            // Prepare SQL statement with parameters for 'stdgrade' and 'stream'
+        $sql = "SELECT * FROM lowergrades WHERE stdgrade = ? AND stream = ?";
+        $stmt = $connect->prepare($sql);
+
+
+        // ================== LOWER ===============
+
+        if (!$stmt) {
+            die("Error in SQL query: " . $connect->error);
+        }
+    
+        // Bind parameters and execute the prepared statement
+        $stmt->bind_param("ss", $stdgrade, $stream);
+        $stmt->execute();
+    
+        // Get result set
+        $result = $stmt->get_result();
+    
+        // Check for data and display in HTML table
+        if ($result->num_rows > 0) {
+
+        
+    
+    ?>
+    
+            <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</title>
+        <style>
+            /* Your CSS styles here */
+            
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            .container {
+                max-width: 70%;
+                margin: 20px auto;
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                overflow: scroll;
+            }
+    
+            h2 {
+                color: #333;
+            }
+    
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+    
+            th, td {
+                padding: 8px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+    
+            th {
+                background-color: #f2f2f2;
+            }
+    
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+    
+            .backbtnbox {
+                margin-top: 20px;
+                display: flex;
+                justify-content: flex-end;
+            }
+    
+            .bckbtnbx {
+                height: 30px;
+                width: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                background-color: #eee;
+                border-radius: 4px;
+                color: #333;
+                border: 1px solid #ccc;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+    
+            .bckbtnbx:hover {
+                background-color: #ddd;
+            }
+        
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h2><?php echo htmlspecialchars($stdgrade) . ' - ' . htmlspecialchars($stream); ?> Marks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Math</th>
+                        <th>English</th>
+                        <th>Reading</th>
+                        <th>Kiswahili</th>
+                        <th>Kusoma</th>
+                        <th>Env. Studies</th>
+                        <th>C/A</th>
+                        <th>Agriculture</th>
+                        <th>Total</th>
+                        <!-- Add more table headers here if necessary -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $counter = 1; 
+                    while ($row = $result->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $counter++; ?></td>
+                            <td><?php echo $row['username']; ?></td>
+                            <td><?php echo $row['name']; ?></td>
+                            <td><?php echo $row['subjmath']; ?></td>
+                            <td><?php echo $row['subjeng']; ?></td>
+                            <td><?php echo $row['subjread']; ?></td>
+                            <td><?php echo $row['subjkisw']; ?></td>
+                            <td><?php echo $row['subjkusoma']; ?></td>
+                            <td><?php echo $row['subjenv']; ?></td>
+                            <td><?php echo $row['subjca']; ?></td>
+                            <td><?php echo $row['subjagrinu']; ?></td>
+                            <td><?php echo $row['total']; ?></td>
+                            <!-- Add more table data here if necessary -->
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <div class="backbtnbox">
+                <a href="./viewmarks.php" class="bckbtnbx">Back</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+    <?php
+} else {
+    echo "<script>
+                alert('There are currently no registered students in this class / stream.'); 
+                window.location.href = './entermarks.php';
+            </script>";
+}
+?>
+
+        // ============== LOWER =================
+<?php
+    }else {
+        echo "No grade selected.";
+    }    
+?>
+
+
+
+<?php
+
+    // Close prepared statement and database connection
+    $stmt->close();
+    $connect->close();
+
+} else {
+    echo "Invalid request.";
+}
+?>
