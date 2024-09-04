@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .student-card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .navigation {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Student List</h1>
+
+<div id="student-container">
+    <!-- Student Cards will be inserted here -->
+</div>
+
+<div class="navigation">
+    <button onclick="prevStudent()">Previous</button>
+    <button onclick="nextStudent()">Next</button>
+</div>
+
+<script>
+    const students = [
+        {name: 'John Doe', age: 20, grade: 'A'},
+        {name: 'Jane Smith', age: 22, grade: 'B'},
+        {name: 'Emily Brown', age: 21, grade: 'C'},
+        // Add more students here
+    ];
+
+    let currentIndex = 0;
+
+    function displayStudent(index) {
+        const student = students[index];
+        const studentCard = `
+            <div class="student-card">
+                <h2>${student.name}</h2>
+                <p>Age: ${student.age}</p>
+                <p>Grade: ${student.grade}</p>
+            </div>
+        `;
+        document.getElementById('student-container').innerHTML = studentCard;
+    }
+
+    function nextStudent() {
+        if (currentIndex < students.length - 1) {
+            currentIndex++;
+            displayStudent(currentIndex);
+        }
+    }
+
+    function prevStudent() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            displayStudent(currentIndex);
+        }
+    }
+
+    // Display the first student when the page loads
+    displayStudent(currentIndex);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+CREATE TABLE `lowergrades` (
+  `username` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `stdgrade` varchar(255) NOT NULL,
+  `stream` varchar(255) NOT NULL,
+  `subjmath` varchar(255) NOT NULL,
+  `subjmathrub` varchar(255) NOT NULL,
+  `subjeng` varchar(255) NOT NULL,
+  `subjengrub` varchar(255) NOT NULL,
+  `subjread` varchar(255) NOT NULL,
+  `subjreadrub` varchar(255) NOT NULL,
+  `subjkisw` varchar(255) NOT NULL,
+  `subjkiswrub` varchar(255) NOT NULL,
+  `subjkusoma` varchar(255) NOT NULL,
+  `subjkusomarub` varchar(255) NOT NULL,
+  `subjenv` varchar(255) NOT NULL,
+  `subjenvrub` varchar(255) NOT NULL,
+  `subjca` varchar(255) NOT NULL,
+  `subjcarub` varchar(255) NOT NULL,
+  `subjagrinu` varchar(255) NOT NULL,
+  `subjagrinurub` varchar(255) NOT NULL,
+  `total` INT(255) NOT NULL
+)
