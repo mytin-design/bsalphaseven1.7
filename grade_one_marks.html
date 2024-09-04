@@ -1,0 +1,92 @@
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    .container {
+        width: 100%; 
+        
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        page-break-after: always; /* Ensures each container starts on a new page */
+    }
+    .header {
+    width: 95%; 
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header img {
+            height: 150px;
+        }
+    .footer {
+    width: 100%; 
+            background-color: #333;
+    color: #fff;
+        margin-top: 20px;
+        text-align: center;
+        font-size: 18px;
+    }
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .table-container {
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table th, table td {
+        text-align: center;
+        border: 1px solid #ddd;
+        font-size: smaller;
+    }
+     table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .backbtnbox {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .bckbtnbx {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    .bckbtnbx:hover {
+        background-color: #0056b3;
+    }
+    .streceditbtn {
+        height: 2pc;
+        width: 5pc;
+        background-color: transparent;
+        border-radius: 4pc;
+    }
+    .deleter_x {
+        background-color: rgb(194, 10, 10);
+        color: #fff;
+    }
+    .deleter_x:hover {
+        background-color: red;
+    }
+</style>
+<div class="container"><div class="header"><div class="logo"><img src="./images/cpslogomain.png" alt="School Logo"></div><div class="address"><p>School Name</p><p>Street Address, City</p><p>Phone: (123) 456-7890</p><p>Email: info@school.com</p></div></div><h2>Grade One Marks</h2><div class="table-container"><table><thead><tr><th>#</th><th>Username</th><th>Name</th><th>Math</th><th>Math Rub</th><th>English</th><th>Eng Rub</th><th>Reading</th><th>Reading Rub</th><th>Kiswahili</th><th>Kisw Rub</th><th>Kusoma</th><th>Kusoma Rub</th><th>Env. Studies</th><th>Env. Studies Rub</th><th>C/A</th><th>C/A Rub</th><th>Agriculture</th><th>AgriNu Rub</th><th>Total</th></tr></thead><tbody><tr><td>1</td><td>JOHN12345</td><td>JOHN CARLOS</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>88</td><td id='editbtnbox'><button class='streceditbtn' onclick='editstaffRow("JOHN12345")'>Edit</button> <button class='streceditbtn deleter_x' onclick='deletestaffRow("JOHN12345")'>Delete</button></td></tr><tr><td>2</td><td>JOHN12345</td><td>JOHN CARLOS</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>88</td><td id='editbtnbox'><button class='streceditbtn' onclick='editstaffRow("JOHN12345")'>Edit</button> <button class='streceditbtn deleter_x' onclick='deletestaffRow("JOHN12345")'>Delete</button></td></tr><tr><td>3</td><td>JOHN12345</td><td>JOHN CARLOS</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>88</td><td id='editbtnbox'><button class='streceditbtn' onclick='editstaffRow("JOHN12345")'>Edit</button> <button class='streceditbtn deleter_x' onclick='deletestaffRow("JOHN12345")'>Delete</button></td></tr><tr><td>4</td><td>JOHN12345</td><td>JOHN CARLOS</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>88</td><td id='editbtnbox'><button class='streceditbtn' onclick='editstaffRow("JOHN12345")'>Edit</button> <button class='streceditbtn deleter_x' onclick='deletestaffRow("JOHN12345")'>Delete</button></td></tr><tr><td>5</td><td>JOHN12345</td><td>JOHN CARLOS</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>11</td><td>EE</td><td>88</td><td id='editbtnbox'><button class='streceditbtn' onclick='editstaffRow("JOHN12345")'>Edit</button> <button class='streceditbtn deleter_x' onclick='deletestaffRow("JOHN12345")'>Delete</button></td></tr><tr><td class="bold">TOTAL</td><td>___</td><td>___</td><td>55</td><td>MathRub</td><td>55</td><td>EngRub</td><td>55</td><td>ReadRub</td><td>55</td><td>KiswRub</td><td>55</td><td>KusomaRub</td><td>55</td><td>EnvRub</td><td>55</td><td>CARub</td><td>55</td><td>AgriNuRub</td><td>440</td></tr><tr><td>MEAN</td><td>___</td><td>___</td><td>11</td><td>####</td><td>11</td><td>####</td><td>11</td><td>####</td><td>11</td><td>####</td><td>11</td><td>####</td><td>11</td><td>####</td><td>11</td><td>####</td><td>11</td><td>####</td><td>88</td></tr></tbody></table></div><div class="footer"><p>Contact Us: (123) 456-7890 | Email: info@school.com</p><p>Follow us on: Facebook | Twitter | Instagram</p></div><div class="backbtnbox"><a href="./cpsmarkssystem.php" class="bckbtnbx">Back</a></div><div class="backbtnbox"><a href="./generatePdf.php" class="bckbtnbx">PDF</a><a href="./generateResults.php" class="bckbtnbx">Download Results</a></div></div>

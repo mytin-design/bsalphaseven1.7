@@ -1,0 +1,142 @@
+<?php
+// A PAGE FOR DISPLAYING LEARNERS FROM THE CLASS/GRADE AND STREAM SPECIFIED IN entermarks.php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['stdgrade']) && isset($_POST['stream'])) {
+    $stdgrade = filter_input(INPUT_POST, 'stdgrade', FILTER_SANITIZE_STRING);
+    $stream = filter_input(INPUT_POST, 'stream', FILTER_SANITIZE_STRING);
+
+    // Define subjects based on grade
+    $subjects = [];
+    if ($stdgrade >= 7) {
+        $subjects = ['Math', 'English', 'Kiswahili', 'Integrated Science', 'Pre-Technical', 'Social Studies', 'Creative Arts', 'Agriculture/Nutrition'];
+    } elseif ($stdgrade >= 4 && $stdgrade <= 6) {
+        $subjects = ['Math', 'English', 'Kiswahili', 'Science', 'Social Studies', 'Creative Arts', 'Agriculture/Nutrition'];
+    } else {
+        $subjects = ['Math', 'English', 'Reading', 'Kiswahili', 'Kusoma', 'Environmental Studies', 'Creative Arts', 'Agriculture/Nutrition'];
+    }
+
+    // Display HTML form with subjects based on grade
+    if (!empty($subjects)) {
+        ?>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Enter Marks</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                .table-container {
+                    margin: 20px auto;
+                    max-width: 90%;
+                    overflow-x: auto;
+                }
+
+                .learner-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+
+                .learner-table th,
+                .learner-table td {
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    text-align: left;
+                }
+
+                .learner-table th {
+                    background-color: #f2f2f2;
+                    font-weight: bold;
+                }
+
+                .learner-table tbody tr:nth-child(even) {
+                    background-color: #f9f9f9;
+                }
+
+                .learner-table tbody tr:hover {
+                    background-color: #f0f0f0;
+                }
+
+                .learner-table input[type='text'] {
+                    width: 70px;
+                    padding: 5px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                    text-align: center;
+                }
+
+                .learner-table button {
+                    padding: 5px 10px;
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+
+                .learner-table button:hover {
+                    background-color: #45a049;
+                }
+
+                /* Responsive styles */
+                @media only screen and (max-width: 768px) {
+                    .table-container {
+                        overflow-x: auto;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+        <div class="table-container">
+            <form method="post" action="submit_marks.php"> <!-- Change action to your submission script -->
+                <input type="hidden" name="stdgrade" value="<?= $stdgrade ?>">
+                <input type="hidden" name="stream" value="<?= $stream ?>">
+                <table class="learner-table">
+                    <thead>
+                    <tr>
+                        <th>Assess. No</th>
+                        <th>Full Name</th>
+                        <th>Grade</th>
+                        <th>Stream</th>
+                        <?php foreach ($subjects as $subject): ?>
+                            <th><?= $subject ?></th>
+                        <?php endforeach; ?>
+                        <th>ACTIONS</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><input type="text" name="assessment_number"></td>
+                        <td><input type="text" name="full_name"></td>
+                        <td><?= $stdgrade ?></td>
+                        <td><?= $stream ?></td>
+                        <?php foreach ($subjects as $subject): ?>
+                            <td><input type="text" name="marks[<?= strtolower(str_replace(' ', '_', $subject)) ?>]"></td>
+                        <?php endforeach; ?>
+                        <td><button type="submit">Submit</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        </body>
+        </html>
+        <?php
+    } else {
+        echo "Invalid grade.";
+    }
+} else {
+    echo "Invalid request.";
+}
+?>

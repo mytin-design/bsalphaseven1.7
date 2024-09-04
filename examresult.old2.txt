@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Marks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .table-container {
+            margin: 20px auto;
+            max-width: 90%;
+            overflow-x: auto;
+        }
+
+        .learner-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .learner-table th,
+        .learner-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .learner-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .learner-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .learner-table tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .learner-table input[type='text'] {
+            width: 70px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .learner-table button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .learner-table button:hover {
+            background-color: #45a049;
+        }
+
+        /* Responsive styles */
+        @media only screen and (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<?php
+// A PAGE FOR DISPLAYING LEARNERS FROM THE CLASS/GRADE AND STREAM SPECIFIED IN entermarks.php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['stdgrade']) && isset($_POST['stream'])) {
+    $stdgrade = filter_input(INPUT_POST, 'stdgrade', FILTER_SANITIZE_STRING);
+    $stream = filter_input(INPUT_POST, 'stream', FILTER_SANITIZE_STRING);
+
+    require("./connect.php");
+
+    // Establish database connection
+    if ($connect->connect_error) {
+        die("Connection failed: " . $connect->connect_error);
+    }
+
+    // Prepare SQL statement with parameters for 'stdgrade' and 'stream'
+    $sql = "SELECT * FROM students WHERE stdgrade = ? AND stream = ?";
+    $stmt = $connect->prepare($sql);
+
+    if (!$stmt) {
+        die("Error in SQL query: " . $connect->error);
+    }
+
+    // Bind parameters and execute the prepared statement
+    $stmt->bind_param("ss", $stdgrade, $stream);
+    $stmt->execute();
+
+    // Get result set
+    $result = $stmt->get_result();
+
+    // Check for data and display in HTML table
+    if ($result->num_rows > 0) {
+        // Display table headers
+        echo "<div class='table-container'>";
+        echo "<table class='learner-table'>";
+        echo "<thead>";
+        echo "<tr>";
+        echo "<th>NO</th>";
+        echo "<th>Assess. No</th>";
+        echo "<th>Full Name</th>";
+        echo "<th>Grade</th>";
+        echo "<th>Stream</th>";
+        echo "<th>Maths</th>";
+        echo "<th>Eng</th>";
+        echo "<th>Kisw</th>";
+        echo "<th>S/S</th>";
+        echo "<th>C.R.E</th>";
+        echo "<th>Integrated Scie</th>";
+        echo "<th>Pre-Technical</th>";
+        echo "<th>Creative Arts</th>";
+        echo "<th>Agri/Nutri.</th>";
+        echo "<th>ACTIONS</th>";
+        echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
+
+        $count = 1;
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            // Display student information
+            echo "<td>".$count."</td>";
+            echo "<td>".$row['username']."</td>";
+            echo "<td>".$row['name']."</td>";
+            echo "<td>".$row['stdgrade']."</td>";
+            echo "<td>".$row['stream']."</td>";
+            echo "<td><input type='text' class='sflex' id='subjmath_".$row['username']."' name='subjmath'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjeng_".$row['username']."' name='subjeng'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjkisw_".$row['username']."' name='subjkisw'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjsocial_".$row['username']."' name='subjsocial'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjscre_".$row['username']."' name='subjscre'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjintscie_".$row['username']."' name='subjintscie'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjpretech_".$row['username']."' name='subjpretech'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjca_".$row['username']."' name='subjca'/></td>";
+            echo "<td><input type='text' class='sflex' id='subjagrinu_".$row['username']."' name='subjagrinu'/></td>";
+            echo "<td id='editbtnbox'><button class='streceditbtn' onclick='editRow(\"".$row['username']."\")'>Edit</button> <button class='streceditbtn' onclick='saveRow( \"".$row['username']."\",\"".$row['name']."\",\"".$row['stdgrade']."\",\"".$row['stream']."\")'>Save</button></td>";
+            echo "</tr>";
+            $count++;
+        }
+
+        echo "</tbody>";
+        echo "</table>";
+        echo "</div>";
+    } else {
+        echo "<script>alert('There are currently no Registered students in this class / stream.'); window.location.href = './entermarks.php';</script>";
+    }
+
+    // Close prepared statement and database connection
+    $stmt->close();
+    $connect->close();
+} else {
+    echo "Invalid request.";
+}
+?>
+</body>
+</html>
+
+
+<script>
+    function editRow(username, name, stdgrade, stream) {
+        // Implement edit action using AJAX to retrieve data
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState === 4) {
+                if (this.status === 200) {
+                    var data = JSON.parse(this.responseText);
+                    if (data.success) {
+                        // Populate the input fields with retrieved data
+                        document.getElementById('subjmath_' + username).value = data.subjmath;
+                        document.getElementById('subjeng_' + username).value = data.subjeng;
+                        document.getElementById('subjkisw_' + username).value = data.subjkisw;
+                        document.getElementById('subjsocial_' + username).value = data.subjscie;
+                        document.getElementById('subjscre_' + username).value = data.subjscre;
+                        document.getElementById('subjintscie_' + username).value = data.subjintscie;
+                        document.getElementById('subjpretech_' + username).value = data.subjpretech;
+                        document.getElementById('subjca_' + username).value = data.subjca;
+                        document.getElementById('subjagrinu_' + username).value = data.subjagrinu;
+
+                        // Enable the input fields for editing
+                        document.getElementById('subjmath_' + username).disabled = false;
+                        document.getElementById('subjeng_' + username).disabled = false;
+                        document.getElementById('subjkisw_' + username).disabled = false;
+                        document.getElementById('subjsocial_' + username).disabled = false;
+                        document.getElementById('subjscre_' + username).disabled = false;
+                        document.getElementById('subjintscie_' + username).disabled = false;
+                        document.getElementById('subjpretech_' + username).disabled = false;
+                        document.getElementById('subjca_' + username).disabled = false;
+                        document.getElementById('subjagrinu_' + username).disabled = false;
+                    } else {
+                        alert("Error retrieving data for student with username: " + username);
+                    }
+                } else {
+                    alert("Error retrieving data for student with username: " + username);
+                }
+            }
+        };
+        xhr.open("GET", "./editmarks.php?username=" + username, true); // Change the URL to your edit data endpoint
+        xhr.send();
+    }
+
+    function saveRow(username, name, stdgrade, stream) {
+        // Functionality to save data instead of deleting
+        // Perform AJAX request or other logic to save the data
+        // Example: You can send the updated data to a PHP script to handle the saving process
+
+        // Example AJAX request (you might need to modify this based on your requirements)
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState === 4) {
+                if (this.status === 200) {
+                    alert("Student with username: " + username + " data saved successfully.");
+                    // Perform additional actions upon successful save, if needed
+                     // Remove the row from the table
+                var row = document.getElementById('annsDisp').querySelector("tr[data-username='" + username + "']");
+                if (row) {
+                    row.remove();
+                }
+                    // window.location.href = './savemarks.php';
+                } else {
+                    alert("Error saving data for student with username: " + username);
+                }
+            }
+        };
+        xhr.open("POST", "./savemarks.php", true); // Change the URL to your save data endpoint
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send("username=" + username + "&name=" + name + "&stdgrade=" + stdgrade + "&stream=" + stream + "&subjmath=" + document.getElementById('subjmath_' + username).value + "&subjeng=" + document.getElementById('subjeng_' + username).value + '&subjkisw=' + document.getElementById('subjkisw_' + username).value + '&subjsocial=' + document.getElementById('subjsocial_' + username).value + '&subjscre=' + document.getElementById('subjscre_' + username).value + '&subjintscie=' + document.getElementById('subjintscie_' + username).value + '&subjpretech=' + document.getElementById('subjpretech_' + username).value + '&subjca=' + document.getElementById('subjca_' + username).value + '&subjagrinu=' + document.getElementById('subjagrinu_' + username).value);
+    }
+
+</script>

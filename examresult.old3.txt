@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Marks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #student-container {
+            margin: 5pc auto;
+            width: 30%;
+        }
+
+        .student-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 90%;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .card-actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .flexsubjs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sflex {
+            height: 2pc;
+            width: 5pc;
+        }
+    </style>
+</head>
+<body>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['stdgrade']) && isset($_POST['stream'])) {
+    $stdgrade = filter_input(INPUT_POST, 'stdgrade', FILTER_SANITIZE_STRING);
+    $stream = filter_input(INPUT_POST, 'stream', FILTER_SANITIZE_STRING);
+
+    require("./connect.php");
+
+    if ($connect->connect_error) {
+        die("Connection failed: " . $connect->connect_error);
+    }
+
+    $sql = "SELECT * FROM students WHERE stdgrade = ? AND stream = ?";
+    $stmt = $connect->prepare($sql);
+
+    if (!$stmt) {
+        die("Error in SQL query: " . $connect->error);
+    }
+
+    $stmt->bind_param("ss", $stdgrade, $stream);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $studentsData = [];
+        while ($row = $result->fetch_assoc()) {
+            $studentsData[] = $row;
+        }
+        echo "<div id='student-container'>";
+        displayStudentCard($studentsData, 0);
+        echo "</div>";
+    } else {
+        echo "<script>alert('There are currently no Registered students in this class / stream.'); window.location.href = './entermarks.php';</script>";
+    }
+
+    $stmt->close();
+    $connect->close();
+} else {
+    echo "Invalid request.";
+}
+
+function displayStudentCard($students, $index) {
+    $student = $students[$index];
+    echo "<div class='student-card'>";
+    echo "<h3>" . $student['name'] . "</h3>";
+    echo "<p><strong>Assess. No:</strong> " . $student['username'] . "</p>";
+    echo "<p><strong>Grade:</strong> " . $student['stdgrade'] . "</p>";
+    echo "<p><strong>Stream:</strong> " . $student['stream'] . "</p>";
+    // Add other fields here...
+    echo "<div class='flexsubjs' ><p class='subjname'>Mathematics</p><input type='text' class='sflex' id='subjmath_".$student['username']."' name='subjmath'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>English</p><input type='text' class='sflex' id='subjeng_".$student['username']."' name='subjeng'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>Kiswahili</p><input type='text' class='sflex' id='subjkisw_".$student['username']."' name='subjkisw'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>Social Studies</p><input type='text' class='sflex' id='subjsocial_".$student['username']."' name='subjsocial'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>C.R.E</p><input type='text' class='sflex' id='subjscre_".$student['username']."' name='subjscre'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>Integrated Science</p><input type='text' class='sflex' id='subjintscie_".$student['username']."' name='subjintscie'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>Pretechnical Studies</p><input type='text' class='sflex' id='subjpretech_".$student['username']."' name='subjpretech'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>C/A Sports</p><input type='text' class='sflex' id='subjca_".$student['username']."' name='subjca'/></div>";
+            echo "<div class='flexsubjs' ><p class='subjname'>Agri & Nutrition</p><input type='text' class='sflex' id='subjagrinu_".$student['username']."' name='subjagrinu'/></div>";
+
+    echo "<div class='card-actions'>";
+    echo "<button onclick='prevStudent()'>Previous</button>";
+    echo "<button onclick='nextStudent()'>Next</button>";
+    echo "<button onclick='editStudent(\"" . $student['username'] . "\", \"" . $student['name'] . "\", \"" . $student['stdgrade'] . "\", \"" . $student['stream'] . "\")'>Edit</button>";
+    echo "<button onclick='saveStudent(\"" . $student['username'] . "\", \"" . $student['name'] . "\", \"" . $student['stdgrade'] . "\", \"" . $student['stream'] . "\")'>Save</button>";
+    echo "</div>";
+
+    echo "</div>";
+}
+
+?>
+
+
+<script>
+
+const students = <?php echo json_encode($studentsData); ?>;
+    
+
+    let currentIndex = 0;
+
+
+    function displayStudentCard(CurrentIndex) {
+        const student = students[CurrentIndex]; 
+    }
+
+   
+
+    function nextStudent() {
+        if (currentIndex < students.length - 1) {
+            currentIndex++;
+            displayStudentCard(currentIndex);
+        }
+    }
+
+    function prevStudent() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            displayStudentCard(currentIndex);
+        }
+    }
+
+    // Display the first student when the page loads
+    displayStudentCard(currentIndex);
+</script>
+
+
+</body>
+</html>
+
+
